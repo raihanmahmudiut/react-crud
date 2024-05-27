@@ -33,6 +33,4 @@ const usePosts = () => {
 
 export default usePosts
 
-function JSONstringify(arg0: any): any {
-    throw new Error("Function not implemented.")
-}
+
