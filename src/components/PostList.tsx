@@ -9,6 +9,8 @@ const Sidebar = lazy(() => import('./Sidebar'));
 const Navbar = lazy(() => import('./Navbar'));
 const PostItems = lazy(() => import('./PostItems'));
 
+// generating random timestamps for the post items to reflect post order
+
 const getRandomDate = (start: Date, end: Date, id: number, maxId: number) => {
   const factor = id / maxId;
   const randomTimestamp = start.getTime() + factor * (end.getTime() - start.getTime());
@@ -20,7 +22,7 @@ const PostList: React.FC = () => {
   const { users, loading: usersLoading } = useUsers();
   const [currentPage, setCurrentPage] = useState(1);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+//pushing timestamps to posts on load
   useEffect(() => {
     if (posts.length) {
       const maxPostId = Math.max(...posts.map(post => post.id));
@@ -31,6 +33,8 @@ const PostList: React.FC = () => {
     }
   }, [posts]);
 
+    //Skeletons for posts loading time
+
   if (postsLoading || usersLoading) {
     return (
       <div className="container mx-auto p-4">
@@ -40,7 +44,9 @@ const PostList: React.FC = () => {
         ))}
       </div>
     );
-  }
+    }
+    
+    // finding the posts for a single page
 
   const postsPerPage = 10;
   const indexOfLastPost = currentPage * postsPerPage;
@@ -52,7 +58,9 @@ const PostList: React.FC = () => {
   const getUser = (userId: number) => {
     const user = users.find(user => user.id === userId);
     return user ? user.name : 'Unknown';
-  };
+    };
+    
+
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);

@@ -11,6 +11,7 @@ const usePosts = () => {
         const getPosts = async () => {
             try {
                 const response = await fetchPosts()
+                //sorting the posts based on id to reflect posting order of the timeline
                 const sortedData = response.data.sort((a: { id: number }, b: { id: number }) => a.id - b.id);
                 setPosts(sortedData);
                 

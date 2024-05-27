@@ -23,7 +23,8 @@ const Navbar: React.FC<NavbarProps> = ({ toggleSidebar }) => {
           onClick={toggleSidebar}
         >
           <FaBars className="w-6 h-6 fill-current text-white" />
-        </button>
+              </button>
+              {/* Navlinks */}
         <ul className="hidden md:flex space-x-8">
           {navLinks.map((link) => (
             <li key={link.name}>
@@ -33,7 +34,9 @@ const Navbar: React.FC<NavbarProps> = ({ toggleSidebar }) => {
             </li>
           ))}
         </ul>
-      </div>
+          </div>
+          
+          {/* Forum banner */}
       <div className="text-center mt-4">
         <div className="bg-teal-700 text-white py-4 px-8 rounded-lg shadow-lg">
           <h2 className="text-xl font-semibold">Welcome to Tech Forum</h2>

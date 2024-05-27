@@ -11,7 +11,8 @@ const useComments = (postId: number) => {
   useEffect(() => {
     const getComments = async () => {
       try {
-        const response = await fetchComments();
+          const response = await fetchComments();
+          //organizing comments according to postID by filtering
         setComments(response.data.filter((comment: Comment) => comment.postId === postId));
       } catch (error) {
         console.error('Failed to fetch comments', error);

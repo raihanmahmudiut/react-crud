@@ -63,7 +63,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, toggleSidebar }) => {
         <button className="focus:outline-none" onClick={toggleSidebar}>
           <FaTimes className="w-6 h-6 text-white" />
         </button>
-      </div>
+          </div>
+          
+          
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-4 text-white">Categories</h2>
         <ul className="divide-y divide-gray-200">
