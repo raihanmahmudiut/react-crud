@@ -1,30 +1,39 @@
-# React + TypeScript + Vite
+# Tech Forum API Demo
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Tech Forum API Demo is a simple web application that fetches data from a mock API and displays it on the frontend. This repository contains the source code for the Tech Forum API Demo.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **API Data Fetching:** Fetches data from a mock API endpoint.
+- **Post Listing:** Displays posts fetched from the API.
+- **Responsive Design:** Enjoy a seamless experience on both desktop and mobile devices.
 
-## Expanding the ESLint configuration
+## Installation
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+To run the Tech Forum API Demo locally, follow these steps:
 
-- Configure the top-level `parserOptions` property like this:
+1. Clone this repository to your local machine.
+2. Navigate to the project directory.
+3. Install dependencies by running `npm install`.
+4. Start the development server by running `npm start`.
+5. Open your browser and visit `http://localhost:5173` to view the application.
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+## Technologies Used
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+- React: Frontend JavaScript library for building user interfaces.
+- TypeScript: Superset of JavaScript that adds static type-checking.
+- Tailwind CSS: Utility-first CSS framework for styling.
+- Vite: Used Vite for handling the bundling and packages
+
+
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+## Acknowledgements
+
+- This project uses mock API data provided by jsonplaceholder.
+
+
+
