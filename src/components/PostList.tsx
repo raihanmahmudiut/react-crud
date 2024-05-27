@@ -65,7 +65,7 @@ const PostList: React.FC = () => {
         <div className="flex">
           <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
           <div className="w-full md:flex-1 container mx-auto p-4">
-            <div className="text-gray-700 mb-4 flex flex-row items-center justify-between">
+            <div className="text-gray-700 mb-4 flex-col flex md:flex-row items-center justify-between">
               <h4>Showing {postsPerPage} posts per page.</h4>
               <Pagination
                 postsPerPage={postsPerPage}
