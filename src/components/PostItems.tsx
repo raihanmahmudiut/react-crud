@@ -51,7 +51,9 @@ const PostItems: React.FC<PostItemsProps> = ({ post, user }) => {
   }
 
   return (
-    <div className="bg-blue-200 flex flex-col gap-3 rounded-lg shadow-lg p-6 mb-4 backdrop-blur-md backdrop-filter bg-opacity-20">
+    <div className={`flex flex-col gap-3 rounded-lg shadow-lg p-6 mb-4 backdrop-blur-md backdrop-filter bg-opacity-20 transition duration-300 ${
+        isExpanded ? 'bg-blue-400' : 'bg-blue-200 group hover:bg-blue-300'
+      }`}>
       <h2 className="text-lg md:text-2xl font-semibold mb-2 capitalize">{post.title}</h2>
       <div className="flex items-center justify-between">
         <div className="flex items-center">
@@ -73,7 +75,7 @@ const PostItems: React.FC<PostItemsProps> = ({ post, user }) => {
             <p className="text-gray-600">Loading comments...</p>
           ) : (
             comments.map((comment) => (
-              <div key={comment.id} className="my-2 flex flex-col gap-3 bg-blue-100 p-4 rounded-md backdrop-blur-md backdrop-filter bg-opacity-40">
+              <div key={comment.id} className="my-2 flex flex-col gap-3 bg-blue-100 hover:bg-blue-200 transition duration-300 p-4 rounded-md backdrop-blur-md backdrop-filter bg-opacity-40">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <img src="https://avatar.iran.liara.run/public" alt={comment.name} className="w-8 h-8 rounded-full mr-2" />
