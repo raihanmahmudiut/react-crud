@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Post } from '../models/Post';
 import useComments from '../hooks/useComments';
+import PostSkeleton from './PostSkeleton';
 
 interface PostItemsProps {
   post: Post;
@@ -32,11 +33,21 @@ const calculateTimeAgo = (timestamp: string) => {
 const PostItems: React.FC<PostItemsProps> = ({ post, user }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { comments, loading } = useComments(post.id);
+  const [loadingPost, setLoadingPost] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading delay
+    const timer = setTimeout(() => {
+      setLoadingPost(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const timeAgo = calculateTimeAgo(post.timestamp);
 
-  if (!timeAgo) {
-    return null; // Return nothing until the timestamp is available
+  if (loadingPost || !timeAgo) {
+    return <PostSkeleton />;
   }
 
   return (
@@ -68,7 +79,7 @@ const PostItems: React.FC<PostItemsProps> = ({ post, user }) => {
                     <img src="https://avatar.iran.liara.run/public" alt={comment.name} className="w-8 h-8 rounded-full mr-2" />
                     <h4 className="text-md font-semibold capitalize">{comment.name}</h4>
                   </div>
-                  <span className="text-xs text-gray-500">{timeAgo}</span>
+                        <span className="text-xs text-gray-500">{timeAgo}</span>
                 </div>
                 <p className="text-gray-700 text-sm capitalize">{comment.body}</p>
               </div>

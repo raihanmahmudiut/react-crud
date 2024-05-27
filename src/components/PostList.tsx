@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 import usePosts from '../hooks/usePosts';
 import useUsers from '../hooks/useUsers';
-import PostItems from './PostItems';
 import Pagination from './Pagination';
-import Sidebar from './Sidebar';
-import Navbar from './Navbar';
+import PostSkeleton from './PostSkeleton';
 
-// Function to generate a random date between start and end, biased towards earlier dates for lower post IDs
+// Lazy load components
+const Sidebar = lazy(() => import('./Sidebar'));
+const Navbar = lazy(() => import('./Navbar'));
+const PostItems = lazy(() => import('./PostItems'));
+
 const getRandomDate = (start: Date, end: Date, id: number, maxId: number) => {
   const factor = id / maxId;
   const randomTimestamp = start.getTime() + factor * (end.getTime() - start.getTime());
@@ -23,7 +25,6 @@ const PostList: React.FC = () => {
     if (posts.length) {
       const maxPostId = Math.max(...posts.map(post => post.id));
       
-      // Setting timestamps in the post data
       posts.forEach(post => {
         post.timestamp = getRandomDate(new Date(2020, 0, 1), new Date(), post.id, maxPostId).toISOString();
       });
@@ -31,10 +32,16 @@ const PostList: React.FC = () => {
   }, [posts]);
 
   if (postsLoading || usersLoading) {
-    return <p className="text-center text-gray-600">Loading...</p>;
+    return (
+      <div className="container mx-auto p-4">
+        <div className="text-center text-gray-600">Loading...</div>
+        {[...Array(10)].map((_, index) => (
+          <PostSkeleton key={index} />
+        ))}
+      </div>
+    );
   }
 
-  // Finding out the current page data
   const postsPerPage = 10;
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -53,32 +60,35 @@ const PostList: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <Navbar toggleSidebar={toggleSidebar} />
-      <div className="flex">
-        <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-        <div className="w-full md:flex-1 container mx-auto p-4">
-          <div className="text-gray-700 mb-4 flex flex-row items-center justify-between">
-                      <h4>Showing {postsPerPage} posts per page.</h4>
-                      <Pagination
-            postsPerPage={postsPerPage}
-            totalPosts={posts.length}
-            paginate={paginate}
-            currentPage={currentPage}
-          />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Navbar toggleSidebar={toggleSidebar} />
+        <div className="flex">
+          <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+          <div className="w-full md:flex-1 container mx-auto p-4">
+            <div className="text-gray-700 mb-4 flex flex-row items-center justify-between">
+              <h4>Showing {postsPerPage} posts per page.</h4>
+              <Pagination
+                postsPerPage={postsPerPage}
+                totalPosts={posts.length}
+                paginate={paginate}
+                currentPage={currentPage}
+              />
+            </div>
+            {currentPosts.map(post => (
+              <PostItems key={post.id} post={post} user={getUser(post.userId)} />
+            ))}
+            <Pagination
+              postsPerPage={postsPerPage}
+              totalPosts={posts.length}
+              paginate={paginate}
+              currentPage={currentPage}
+            />
           </div>
-          {currentPosts.map(post => (
-            <PostItems key={post.id} post={post} user={getUser(post.userId)} />
-          ))}
-          <Pagination
-            postsPerPage={postsPerPage}
-            totalPosts={posts.length}
-            paginate={paginate}
-            currentPage={currentPage}
-          />
         </div>
-      </div>
+      </Suspense>
     </div>
   );
 };
 
 export default PostList;
+
