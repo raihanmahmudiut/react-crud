@@ -3,17 +3,15 @@ import { useState, useEffect } from 'react';
 import { fetchComments } from '../services/api';
 import { Comment } from '../models/Comments';
 
-
-const useComments = (postId: number) => {
+const useComments = () => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getComments = async () => {
       try {
-          const response = await fetchComments();
-          //organizing comments according to postID by filtering
-        setComments(response.data.filter((comment: Comment) => comment.postId === postId));
+        const response = await fetchComments();
+        setComments(response.data);
       } catch (error) {
         console.error('Failed to fetch comments', error);
       } finally {
@@ -22,7 +20,7 @@ const useComments = (postId: number) => {
     };
 
     getComments();
-  }, [postId]);
+  }, []);
 
   return { comments, loading };
 };

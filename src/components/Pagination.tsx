@@ -11,7 +11,7 @@ const Pagination: React.FC<PaginationProps> = ({
   postsPerPage,
   totalPosts,
   paginate,
-  currentPage
+  currentPage,
 }) => {
   const pageNumbers = [];
 
@@ -23,7 +23,10 @@ const Pagination: React.FC<PaginationProps> = ({
     <nav>
       <ul className="flex flex-wrap justify-center mt-4">
         {pageNumbers.map((num) => (
-          <li key={num} className={`mx-1 ${num === currentPage ? 'font-bold' : ''}`}>
+          <li
+            key={num}
+            className={`mx-1 ${num === currentPage ? 'font-bold' : ''}`}
+          >
             <button
               onClick={() => paginate(num)}
               className="px-4 py-2 border rounded hover:bg-gray-200"

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Post } from '../models/Post';
-import useComments from '../hooks/useComments';
 import PostSkeleton from './PostSkeleton';
+import { Comment } from '../models/Comments';
 
 interface PostItemsProps {
   post: Post;
   user: string;
+  comments: Comment[];
+  commentsLoading: boolean;
 }
 
 const calculateTimeAgo = (timestamp: string) => {
@@ -30,9 +32,13 @@ const calculateTimeAgo = (timestamp: string) => {
   }
 };
 
-const PostItems: React.FC<PostItemsProps> = ({ post, user }) => {
+const PostItems: React.FC<PostItemsProps> = ({
+  post,
+  user,
+  comments,
+  commentsLoading,
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const { comments, loading } = useComments(post.id);
   const [loadingPost, setLoadingPost] = useState(true);
 
   useEffect(() => {
@@ -50,19 +56,31 @@ const PostItems: React.FC<PostItemsProps> = ({ post, user }) => {
     return <PostSkeleton />;
   }
 
+  const postComments = comments.filter((comment) => comment.postId === post.id);
+
   return (
-    <div className={`flex flex-col gap-3 rounded-lg shadow-lg p-6 mb-4 backdrop-blur-md backdrop-filter bg-opacity-20 transition duration-300 ${
+    <div
+      className={`flex flex-col gap-3 rounded-lg shadow-lg p-6 mb-4 backdrop-blur-md backdrop-filter bg-opacity-20 transition duration-300 ${
         isExpanded ? 'bg-blue-400' : 'bg-blue-200 group hover:bg-blue-300'
-      }`}>
-      <h2 className="text-lg md:text-2xl font-semibold mb-2 capitalize">{post.title}</h2>
+      }`}
+    >
+      <h2 className="text-lg md:text-2xl font-semibold mb-2 capitalize">
+        {post.title}
+      </h2>
       <div className="flex items-center justify-between">
         <div className="flex items-center">
-          <img src="https://avatar.iran.liara.run/public" alt={user} className="w-10 h-10 rounded-full mr-3" />
+          <img
+            src="https://avatar.iran.liara.run/public"
+            alt={user}
+            className="w-10 h-10 rounded-full mr-3"
+          />
           <h4 className="text-sm text-gray-600 mb-4 capitalize">by {user}</h4>
         </div>
         <span className="text-sm text-gray-500">{timeAgo}</span>
       </div>
-      <p className="text-gray-800 text-sm md:text-md mb-4 capitalize">{post.body}</p>
+      <p className="text-gray-800 text-sm md:text-md mb-4 capitalize">
+        {post.body}
+      </p>
       <button
         className="text-blue-500 hover:text-blue-700"
         onClick={() => setIsExpanded(!isExpanded)}
@@ -71,19 +89,30 @@ const PostItems: React.FC<PostItemsProps> = ({ post, user }) => {
       </button>
       {isExpanded && (
         <div className="mt-4">
-          {loading ? (
+          {commentsLoading ? (
             <p className="text-gray-600">Loading comments...</p>
           ) : (
-            comments.map((comment) => (
-              <div key={comment.id} className="my-2 flex flex-col gap-3 bg-blue-100 hover:bg-blue-200 transition duration-300 p-4 rounded-md backdrop-blur-md backdrop-filter bg-opacity-40">
+            postComments.map((comment) => (
+              <div
+                key={comment.id}
+                className="my-2 flex flex-col gap-3 bg-blue-100 hover:bg-blue-200 transition duration-300 p-4 rounded-md backdrop-blur-md backdrop-filter bg-opacity-40"
+              >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <img src="https://avatar.iran.liara.run/public" alt={comment.name} className="w-8 h-8 rounded-full mr-2" />
-                    <h4 className="text-sm md:text-md font-semibold capitalize">{comment.name}</h4>
+                    <img
+                      src="https://avatar.iran.liara.run/public"
+                      alt={comment.name}
+                      className="w-8 h-8 rounded-full mr-2"
+                    />
+                    <h4 className="text-sm md:text-md font-semibold capitalize">
+                      {comment.name}
+                    </h4>
                   </div>
-                        <span className="text-xs text-gray-500">{timeAgo}</span>
+                  <span className="text-xs text-gray-500">{timeAgo}</span>
                 </div>
-                <p className="text-gray-700 text-xs md:text-sm capitalize">{comment.body}</p>
+                <p className="text-gray-700 text-xs md:text-sm capitalize">
+                  {comment.body}
+                </p>
               </div>
             ))
           )}

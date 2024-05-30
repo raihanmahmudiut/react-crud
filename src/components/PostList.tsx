@@ -1,5 +1,6 @@
 import React, { useEffect, useState, lazy, Suspense } from 'react';
 import usePosts from '../hooks/usePosts';
+import useComments from '../hooks/useComments';
 import useUsers from '../hooks/useUsers';
 import Pagination from './Pagination';
 import PostSkeleton from './PostSkeleton';
@@ -9,33 +10,38 @@ const Sidebar = lazy(() => import('./Sidebar'));
 const Navbar = lazy(() => import('./Navbar'));
 const PostItems = lazy(() => import('./PostItems'));
 
-// generating random timestamps for the post items to reflect post order
-
+// Generating random timestamps for the post items to reflect post order
 const getRandomDate = (start: Date, end: Date, id: number, maxId: number) => {
   const factor = id / maxId;
-  const randomTimestamp = start.getTime() + factor * (end.getTime() - start.getTime());
+  const randomTimestamp =
+    start.getTime() + factor * (end.getTime() - start.getTime());
   return new Date(randomTimestamp);
 };
 
 const PostList: React.FC = () => {
   const { posts, loading: postsLoading } = usePosts();
   const { users, loading: usersLoading } = useUsers();
+  const { comments, loading: commentsLoading } = useComments();
   const [currentPage, setCurrentPage] = useState(1);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-//pushing timestamps to posts on load
+
+  // Pushing timestamps to posts on load
   useEffect(() => {
     if (posts.length) {
-      const maxPostId = Math.max(...posts.map(post => post.id));
-      
-      posts.forEach(post => {
-        post.timestamp = getRandomDate(new Date(2020, 0, 1), new Date(), post.id, maxPostId).toISOString();
+      const maxPostId = Math.max(...posts.map((post) => post.id));
+      posts.forEach((post) => {
+        post.timestamp = getRandomDate(
+          new Date(2020, 0, 1),
+          new Date(),
+          post.id,
+          maxPostId
+        ).toISOString();
       });
     }
   }, [posts]);
 
-    //Skeletons for posts loading time
-
-  if (postsLoading || usersLoading) {
+  // Skeletons for posts loading time
+  if (postsLoading || usersLoading || commentsLoading) {
     return (
       <div className="container mx-auto p-4">
         <div className="text-center text-gray-600">Loading...</div>
@@ -44,10 +50,9 @@ const PostList: React.FC = () => {
         ))}
       </div>
     );
-    }
-    
-    // finding the posts for a single page
+  }
 
+  // Finding the posts for a single page
   const postsPerPage = 10;
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -55,12 +60,12 @@ const PostList: React.FC = () => {
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  const getUser = (userId: number) => {
-    const user = users.find(user => user.id === userId);
-    return user ? user.name : 'Unknown';
-    };
-    
+  // Using Map for user lookup
+  const usersMap = new Map(users.map((user) => [user.id, user.name]));
 
+  const getUser = (userId: number) => {
+    return usersMap.get(userId) || 'Unknown';
+  };
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -71,7 +76,10 @@ const PostList: React.FC = () => {
       <Suspense fallback={<div>Loading...</div>}>
         <Navbar toggleSidebar={toggleSidebar} />
         <div className="flex">
-          <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+          <Sidebar
+            isSidebarOpen={isSidebarOpen}
+            toggleSidebar={toggleSidebar}
+          />
           <div className="w-full md:flex-1 container mx-auto p-4">
             <div className="text-gray-700 mb-4 flex-col flex md:flex-row items-center justify-between">
               <h4>Showing {postsPerPage} posts per page.</h4>
@@ -82,8 +90,14 @@ const PostList: React.FC = () => {
                 currentPage={currentPage}
               />
             </div>
-            {currentPosts.map(post => (
-              <PostItems key={post.id} post={post} user={getUser(post.userId)} />
+            {currentPosts.map((post) => (
+              <PostItems
+                key={post.id}
+                post={post}
+                user={getUser(post.userId)}
+                comments={comments}
+                commentsLoading={commentsLoading}
+              />
             ))}
             <Pagination
               postsPerPage={postsPerPage}
@@ -99,4 +113,3 @@ const PostList: React.FC = () => {
 };
 
 export default PostList;
-

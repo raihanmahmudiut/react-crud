@@ -1,3 +1,4 @@
+
 // Defining the interfaces for the data types
 export interface Category {
     name: string;
